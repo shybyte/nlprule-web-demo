@@ -1,12 +1,6 @@
 name: Build & deploy
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+on: workflow_dispatch
 
 jobs:
   build:
@@ -19,3 +13,5 @@ jobs:
 
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - run: cd nlprule-wasm && wasm-pack build
