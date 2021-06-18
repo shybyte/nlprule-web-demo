@@ -1,6 +1,7 @@
-mod utils;
-
+use nlprule::{Rules, Tokenizer};
 use wasm_bindgen::prelude::*;
+
+mod utils;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -9,11 +10,37 @@ use wasm_bindgen::prelude::*;
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
-extern {
-    fn alert(s: &str);
+extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
 }
 
 #[wasm_bindgen]
-pub fn greet() {
-    alert("Hello, nlprule-wasm!");
+pub struct NlpRuleChecker {
+    tokenizer: Tokenizer,
+    rules: Rules,
+}
+
+#[wasm_bindgen]
+impl NlpRuleChecker {
+    pub fn new() -> Self {
+        utils::set_panic_hook();
+
+        let tokenizer_bytes: &'static [u8] = include_bytes!("../binaries/en_tokenizer.bin");
+        let rules_bytes: &'static [u8] = include_bytes!("../binaries/en_rules.bin");
+
+        log("Init Tokenizer");
+        let tokenizer = Tokenizer::from_reader(tokenizer_bytes).expect("tokenizer binary is valid");
+
+        log("Init Rules");
+        let rules = Rules::from_reader(rules_bytes).expect("rules binary is valid");
+
+        log("NlpRuleChecker is ready.");
+        NlpRuleChecker { tokenizer, rules }
+    }
+
+    pub fn check(&self, text: &str) -> JsValue {
+        let suggestions = self.rules.suggest(text, &self.tokenizer);
+        JsValue::from_serde(&suggestions).unwrap()
+    }
 }
