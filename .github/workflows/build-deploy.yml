@@ -14,15 +14,17 @@ jobs:
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
-      - run: cd nlprule-wasm && wasm-pack build && cd ..
+      - run: cd nlprule-wasm && wasm-pack build
 
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
 
-      - run: cd minimal-example
-      - run: npm i
-      - run: npm run build
+      - name: Build minimal example
+        working-directory: ./minimal-example
+        run: |
+          npm i
+          npm run build
 
       - name: Upload production-ready build files
         uses: actions/upload-artifact@v2
