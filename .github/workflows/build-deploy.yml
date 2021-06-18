@@ -16,10 +16,9 @@ jobs:
 
       - run: cd nlprule-wasm && wasm-pack build && cd ..
 
-      - name: Install Node.js
-          uses: actions/setup-node@v1
-          with:
-            node-version: 14.x
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
 
       - run: cd minimal-example
       - run: npm i
