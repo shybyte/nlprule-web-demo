@@ -43,7 +43,7 @@ eval("\"use strict\";\n// Instantiate WebAssembly module\nvar wasmExports = __we
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var nlprule_wasm__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! nlprule-wasm */ \"../nlprule-wasm/pkg/nlprule_wasm.js\");\n\n\nconst nlpRuleChecker = nlprule_wasm__WEBPACK_IMPORTED_MODULE_0__[\"NlpRuleChecker\"].new();\n\nconsole.log(\"suggestions: \" ,nlpRuleChecker.check('She was not been here since Monday.'))\n\nwindow.nlpRuleChecker = nlpRuleChecker;\n\n\n//# sourceURL=webpack:///./index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var nlprule_wasm__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! nlprule-wasm */ \"../nlprule-wasm/pkg/nlprule_wasm.js\");\n\n\nconst nlpRuleChecker = nlprule_wasm__WEBPACK_IMPORTED_MODULE_0__[\"NlpRuleChecker\"].new();\n\nconsole.log(\"suggestions2: \" ,nlpRuleChecker.check('She was not been here since Monday.'))\n\nwindow.nlpRuleChecker = nlpRuleChecker;\n\nconst textInputField = document.getElementById('textInputField');\nconst correctionsField = document.getElementById('correctionsField');\n\nfunction checkTextInput() {\n  const corrections = nlpRuleChecker.check(textInputField.value);\n  correctionsField.value = corrections.length > 0\n    ? JSON.stringify(corrections, null, 2)\n    : 'I have found no issue.'\n\n}\n\ntextInputField.addEventListener('input', checkTextInput);\n\ncheckTextInput();\n\n\n//# sourceURL=webpack:///./index.js?");
 
 /***/ }),
 
