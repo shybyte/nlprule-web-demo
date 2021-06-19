@@ -1,8 +1,9 @@
 import * as wasm from "nlprule-wasm";
 
+console.time("Initialize nlprule");
 const nlpRuleChecker = wasm.NlpRuleChecker.new();
-
 window.nlpRuleChecker = nlpRuleChecker; // Export for debugging
+console.timeEnd("Initialize nlprule");
 
 const textInputForm = document.getElementById('textInputForm');
 const textInputField = document.getElementById('textInputField');
