@@ -43,4 +43,11 @@ impl NlpRuleChecker {
         let suggestions = self.rules.suggest(text, &self.tokenizer);
         JsValue::from_serde(&suggestions).unwrap()
     }
+
+    pub fn sentencize(&self, text: &str) -> JsValue {
+        let sentences = self.tokenizer.sentencize(text)
+            .map(|it| it.text().to_string())
+            .collect::<Vec<String>>();
+        JsValue::from_serde(&sentences).unwrap()
+    }
 }
