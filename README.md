@@ -21,10 +21,17 @@ You can find it online at https://shybyte.github.io/nlprule-web-demo/.
  cd ..
 ```
 
-### Start in dev mode
+### Start minimal-example in dev mode
 
 ```bash
  cd minimal-example
+ npm start
+```
+
+### Start webworker-example in dev mode
+
+```bash
+ cd webworker-example
  npm start
 ```
 

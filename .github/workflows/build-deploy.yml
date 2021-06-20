@@ -20,8 +20,8 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Build minimal example
-        working-directory: ./minimal-example
+      - name: Build webworker example
+        working-directory: ./webworker-example
         run: |
           npm i
           npm run build
@@ -30,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: production-files
-          path: ./minimal-example/dist
+          path: ./webworker-example/dist
 
   deploy:
     name: Deploy
