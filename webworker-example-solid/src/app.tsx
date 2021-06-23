@@ -1,7 +1,7 @@
 import {createSignal, onMount, Show} from 'solid-js';
 import {render} from 'solid-js/web';
 
-const nlpruleWorker = new Worker(new URL('./nlprule-webworker.js', import.meta.url));
+const nlpruleWorker = new Worker(new URL('./nlprule-webworker.ts', import.meta.url));
 
 function App() {
   const [text, setText] = createSignal('She was not been here since Monday.');
