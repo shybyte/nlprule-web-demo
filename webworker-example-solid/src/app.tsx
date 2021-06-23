@@ -39,17 +39,16 @@ function App() {
         <label for="textInputField">Text:</label>
         <textarea id="textInputField" cols="80" rows="10" value={text()} onInput={(event) => {
           setText((event.target as HTMLTextAreaElement).value)
-        }}></textarea>
+        }}/>
         <button id="checkButton" disabled={isChecking()}>Check</button>
       </form>
 
       <Show when={isChecking()}>
-        <div id="loadingSpinner" class="lds-dual-ring"></div>
+        <div id="loadingSpinner" class="lds-dual-ring"/>
       </Show>
 
       <label for="correctionsField">Corrections:</label>
-      <textarea id="correctionsField" cols="80" rows="20" readOnly value={correctionsText()}></textarea>
-
+      <textarea id="correctionsField" cols="80" rows="20" readOnly value={correctionsText()}/>
     </>
   );
 }
