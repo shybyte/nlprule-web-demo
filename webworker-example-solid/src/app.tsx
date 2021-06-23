@@ -1,4 +1,4 @@
-import {createSignal, onMount} from 'solid-js';
+import {createSignal, onMount, Show} from 'solid-js';
 import {render} from 'solid-js/web';
 
 const nlpruleWorker = new Worker(new URL('./nlprule-webworker.js', import.meta.url));
@@ -43,7 +43,9 @@ function App() {
         <button id="checkButton" disabled={isChecking()}>Check</button>
       </form>
 
-      {isChecking() && <div id="loadingSpinner" class="lds-dual-ring"></div>}
+      <Show when={isChecking()}>
+        <div id="loadingSpinner" class="lds-dual-ring"></div>
+      </Show>
 
       <label for="correctionsField">Corrections:</label>
       <textarea id="correctionsField" cols="80" rows="20" readOnly value={correctionsText()}></textarea>
