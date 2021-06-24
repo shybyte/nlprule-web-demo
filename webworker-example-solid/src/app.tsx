@@ -1,5 +1,6 @@
 import {createSignal, onMount, Show} from 'solid-js';
 import {render} from 'solid-js/web';
+import './index.css'
 
 const nlpruleWorker = new Worker(new URL('./nlprule-webworker.ts', import.meta.url));
 

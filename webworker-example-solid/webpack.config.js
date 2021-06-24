@@ -8,15 +8,21 @@ module.exports = {
     filename: "./src/bootstrap.js",
   },
   module: {
-    rules: [{
-      test: /\.(j|t)sx?$/,
-      use: {
-        loader: 'babel-loader',
-        options: {
-          presets: ['solid', '@babel/typescript']
+    rules: [
+      {
+        test: /\.(j|t)sx?$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['solid', '@babel/typescript']
+          }
         }
-      }
-    }],
+      },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+      ],
   },
   resolve: {
     extensions: ['*', '.js', '.jsx', '.ts', '.tsx'],
@@ -26,6 +32,6 @@ module.exports = {
   },
   mode: "development",
   plugins: [
-    new CopyWebpackPlugin(['static/index.html', 'static/index.css'])
+    new CopyWebpackPlugin(['static/index.html'])
   ],
 };
