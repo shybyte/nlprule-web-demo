@@ -1,18 +1,24 @@
+import CodeMirror from 'codemirror';
+import 'codemirror/addon/display/placeholder.js';
+import 'codemirror/lib/codemirror.css';
 import {createSignal, onMount, Show} from 'solid-js';
 import {render} from 'solid-js/web';
 import './index.css'
 
+
 const nlpruleWorker = new Worker(new URL('./nlprule-webworker.ts', import.meta.url));
 
 function App() {
-  const [text, setText] = createSignal('She was not been here since Monday.');
   const [correctionsText, setCorrectionsText] = createSignal('Initializing...');
   const [isChecking, setIsChecking] = createSignal(true);
+  let codeMirror: CodeMirror.Editor;
+
+  let codeMirrorContainer!: HTMLDivElement;
 
   function checkTextInput() {
     console.log('Start Check');
     setIsChecking(true);
-    nlpruleWorker.postMessage({text: text()});
+    nlpruleWorker.postMessage({text: codeMirror.getValue()});
   }
 
   onMount(() => {
@@ -29,26 +35,35 @@ function App() {
           )
       }
     };
+
+    codeMirror = CodeMirror(codeMirrorContainer, {
+      lineNumbers: true,
+      placeholder: 'Type here!',
+      extraKeys: {Tab: false}
+    });
+    codeMirror.setValue('She was not been here since Monday.');
+    codeMirror.focus();
   });
 
   return (
     <>
-      <form id="textInputForm" onSubmit={(event) => {
-        event.preventDefault();
-        checkTextInput();
-      }}>
-        <label for="textInputField">Text:</label>
-        <textarea id="textInputField" cols="80" rows="10" value={text()} onInput={(event) => {
-          setText((event.target as HTMLTextAreaElement).value)
-        }}/>
-        <button id="checkButton" disabled={isChecking()}>Check</button>
-      </form>
+      <h2>Input Text</h2>
+      <div ref={codeMirrorContainer}></div>
+
+      <button
+        id="checkButton"
+        disabled={isChecking()}
+        onClick={(event) => {
+          checkTextInput();
+        }}
+      >Check
+      </button>
 
       <Show when={isChecking()}>
         <div id="loadingSpinner" class="lds-dual-ring"/>
       </Show>
 
-      <label for="correctionsField">Corrections:</label>
+      <h2>Corrections</h2>
       <textarea id="correctionsField" cols="80" rows="20" readOnly value={correctionsText()}/>
     </>
   );

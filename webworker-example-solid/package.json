@@ -27,6 +27,8 @@
   },
   "homepage": "https://github.com/rustwasm/create-wasm-app#readme",
   "dependencies": {
+    "@types/codemirror": "^5.60.1",
+    "codemirror": "^5.62.0",
     "nlprule-wasm": "file:../nlprule-wasm/pkg",
     "solid-js": "^0.26.5"
   },
