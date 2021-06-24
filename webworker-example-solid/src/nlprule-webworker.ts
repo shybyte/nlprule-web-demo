@@ -1,10 +1,27 @@
-import * as wasm from "../../nlprule-wasm/pkg";
+import * as wasm from '../../nlprule-wasm/pkg';
 
-console.time("Initialize nlprule");
+export interface Correction {
+  source: string;
+  message: string;
+  span: Span;
+  replacements: string[];
+}
+
+export interface Span {
+  byte: Range;
+  char: Range;
+}
+
+export interface Range {
+  start: number;
+  end: number;
+}
+
+console.time('Initialize nlprule');
 const nlpRuleChecker = wasm.NlpRuleChecker.new();
-console.timeEnd("Initialize nlprule");
+console.timeEnd('Initialize nlprule');
 
-self.onmessage = ({ data: { text } }) => {
+self.onmessage = ({data: {text}}) => {
   console.time('Check');
   const corrections = nlpRuleChecker.check(text);
   console.timeEnd('Check');

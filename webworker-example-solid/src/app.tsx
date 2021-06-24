@@ -4,6 +4,12 @@ import 'codemirror/lib/codemirror.css';
 import {createSignal, onMount, Show} from 'solid-js';
 import {render} from 'solid-js/web';
 import './index.css'
+import {Correction} from './nlprule-webworker';
+
+const DEMO_TEXT = [
+  'She was not been here since Monday.',
+  'Its a lonely week.'
+].join('\n');
 
 
 const nlpruleWorker = new Worker(new URL('./nlprule-webworker.ts', import.meta.url));
@@ -21,6 +27,27 @@ function App() {
     nlpruleWorker.postMessage({text: codeMirror.getValue()});
   }
 
+  function onCheckResult(corrections: Correction[]) {
+    setCorrectionsText(corrections.length > 0
+      ? JSON.stringify(corrections, null, 2)
+      : 'I have found no issue.'
+    )
+
+    for (const textMarker of codeMirror.getAllMarks()) {
+      textMarker.clear();
+    }
+
+    for (const correction of corrections) {
+      codeMirror.markText(
+        codeMirror.posFromIndex(correction.span.char.start),
+        codeMirror.posFromIndex(correction.span.char.end),
+        {
+          className: 'correction-marker'
+        }
+      )
+    }
+  }
+
   onMount(() => {
     nlpruleWorker.onmessage = ({data: {eventType, corrections}}) => {
       switch (eventType) {
@@ -29,19 +56,17 @@ function App() {
           return
         case 'checkFinished':
           setIsChecking(false);
-          setCorrectionsText(corrections.length > 0
-            ? JSON.stringify(corrections, null, 2)
-            : 'I have found no issue.'
-          )
+          onCheckResult(corrections);
       }
     };
 
     codeMirror = CodeMirror(codeMirrorContainer, {
       lineNumbers: true,
+      lineWrapping: true,
       placeholder: 'Type here!',
       extraKeys: {Tab: false}
     });
-    codeMirror.setValue('She was not been here since Monday.');
+    codeMirror.setValue(DEMO_TEXT);
     codeMirror.focus();
   });
 
