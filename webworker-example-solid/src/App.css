@@ -1,9 +1,12 @@
-#loadingSpinner {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-50%);
+textarea {
+  display: block;
+  margin-bottom: 1em;
 }
+
+#checkButton {
+  margin: 1em 0;
+}
+
 
 .lds-dual-ring {
   display: inline-block;
@@ -28,4 +31,23 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+
+.correction-marker {
+  background: #faa;
+}
+
+main {
+  display: flex;
+  justify-content: space-between;
+}
+
+#leftColumn {
+  flex: 1;
+}
+
+#codeMirrorContainer {
+  border: 1px solid #ddd;
+  margin: 10px;
 }

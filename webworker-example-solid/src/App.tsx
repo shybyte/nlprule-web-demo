@@ -3,8 +3,9 @@ import 'codemirror/addon/display/placeholder.js';
 import 'codemirror/lib/codemirror.css';
 import {createSignal, onMount, Show} from 'solid-js';
 import {render} from 'solid-js/web';
-import './index.css'
 import {Correction} from './nlprule-webworker';
+import './index.css';
+import './App.css';
 
 const DEMO_TEXT = [
   'She was not been here since Monday.',
@@ -71,26 +72,32 @@ function App() {
   });
 
   return (
-    <>
-      <h2>Input Text</h2>
-      <div ref={codeMirrorContainer}></div>
-
-      <button
-        id="checkButton"
-        disabled={isChecking()}
-        onClick={(event) => {
-          checkTextInput();
-        }}
-      >Check
-      </button>
-
+    <main>
       <Show when={isChecking()}>
         <div id="loadingSpinner" class="lds-dual-ring"/>
       </Show>
 
-      <h2>Corrections</h2>
-      <textarea id="correctionsField" cols="80" rows="20" readOnly value={correctionsText()}/>
-    </>
+      <div id="leftColumn">
+        <h2>Input Text</h2>
+        <div id="codeMirrorContainer" ref={codeMirrorContainer}></div>
+        <button
+          id="checkButton"
+          disabled={isChecking()}
+          onClick={(event) => {
+            checkTextInput();
+          }}
+        >Check</button>
+
+      </div>
+
+      <div>
+        <h2>Corrections</h2>
+        <textarea id="correctionsField" cols="80" rows="20" readOnly value={correctionsText()}/>
+
+      </div>
+
+
+    </main>
   );
 }
 
