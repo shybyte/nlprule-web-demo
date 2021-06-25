@@ -35,6 +35,13 @@ You can find it online at https://shybyte.github.io/nlprule-web-demo/.
  npm start
 ```
 
+### Start webworker-example-solid in dev mode
+
+```bash
+ cd webworker-example-solid
+ npm start
+```
+
 
 ## License
 
