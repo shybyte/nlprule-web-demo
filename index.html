@@ -3,7 +3,6 @@
 <head>
   <meta charset="utf-8">
   <title>NLPRule - Web Demo</title>
-  <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
@@ -14,18 +13,9 @@
 
 This is a <a href="https://github.com/shybyte/nlprule-web-demo">demo</a> for <a href="https://github.com/bminixhofer/nlprule">NLPRule</a>.
 
-<form id="textInputForm">
-  <label for="textInputField">Text:</label>
-  <textarea id="textInputField" cols="80" rows="10">She was not been here since Monday.</textarea>
-  <button id="checkButton" disabled>Check</button>
-</form>
+<div id="app"></div>
 
-<div id="loadingSpinner" class="lds-dual-ring"></div>
-
-<label for="correctionsField">Corrections:</label>
-<textarea id="correctionsField" cols="80" rows="20" readonly>Initializing...</textarea>
-
-<script src="./bootstrap.js"></script>
+<script src="../src/bootstrap.js"></script>
 
 </body>
 </html>
