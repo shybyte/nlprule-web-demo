@@ -1,0 +1,66 @@
+.corrections-list {
+  list-style: none;
+  padding: 5px;
+  background: rgb(244, 244, 244);
+}
+
+.correction-card {
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 7px;
+  margin: 15px 10px;
+  padding: 10px;
+  background: white;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.5s;
+}
+
+.correction-card:hover {
+  box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.2);
+}
+
+.correction-card.selected-correction {
+  box-shadow: 0px 1px 8px rgba(0, 0, 255, 0.5);
+}
+
+.correction-card.removed-correction {
+  transform: scale(0);
+  height: 0;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.issue-text {
+  font-weight: bold;
+}
+
+.correction-card-message {
+  margin-top: 0.4em;
+}
+
+.arrow-right {
+  padding: 0 0.5em;
+  font-weight: bold;
+  color: #888;
+}
+
+.correction-card-replacements {
+  list-style: none;
+  padding: 0;
+  display: inline-block;
+}
+
+.correction-card-replacements li {
+  display: inline-block;
+  background: #af0;
+  margin: 0.2em;
+  padding: 0.2em 0.5em;
+  border-radius: 10px;
+  transition: all 0.5s;
+}
+.correction-card-replacements li:hover {
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}

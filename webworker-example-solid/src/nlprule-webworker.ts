@@ -1,11 +1,17 @@
 import * as wasm from '../../nlprule-wasm/pkg';
 
-export interface Correction {
+export interface Correction extends CorrectionFromWasm {
+  id: string;
+  issueText: string;
+}
+
+export interface CorrectionFromWasm {
   source: string;
   message: string;
   span: Span;
   replacements: string[];
 }
+
 
 export interface Span {
   byte: Range;
@@ -23,11 +29,18 @@ console.timeEnd('Initialize nlprule');
 
 self.onmessage = ({data: {text}}) => {
   console.time('Check');
-  const corrections = nlpRuleChecker.check(text);
+  const corrections: CorrectionFromWasm[] = nlpRuleChecker.check(text);
   console.timeEnd('Check');
+
+  const correctionsResult: Correction[] = corrections.map((it, i) => ({
+    ...it,
+    id: 'id_' + i,
+    issueText: text.slice(it.span.char.start, it.span.char.end)
+  }));
+
   self.postMessage({
     eventType: 'checkFinished',
-    corrections: corrections,
+    corrections: correctionsResult,
   });
 };
 

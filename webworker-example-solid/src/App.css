@@ -3,11 +3,6 @@ textarea {
   margin-bottom: 1em;
 }
 
-#checkButton {
-  margin: 1em 0;
-}
-
-
 .lds-dual-ring {
   display: inline-block;
   width: 80px;
@@ -35,7 +30,7 @@ textarea {
 
 
 .correction-marker {
-  background: #faa;
+  border-bottom: 2px solid #f88;
 }
 
 main {
@@ -47,7 +42,15 @@ main {
   flex: 1;
 }
 
+#rightColumn {
+  flex: 1;
+}
+
 #codeMirrorContainer {
   border: 1px solid #ddd;
   margin: 10px;
+}
+
+.CodeMirror {
+  font-size: 15px;
 }
