@@ -22,28 +22,37 @@ function App() {
   const [corrections, setCorrections] = createSignal<Correction[]>([]);
   const [isChecking, setIsChecking] = createSignal(true);
   const [selectedCorrectionId, setSelectedCorrectionId] = createSignal<string | undefined>(undefined);
-  let codeMirror: CodeMirror.Editor;
 
+  let checkResultsCountOfCurrentCheck = 0;
+
+  let codeMirror: CodeMirror.Editor;
   let codeMirrorContainer!: HTMLDivElement;
 
   function checkTextInput() {
     console.log('Start Check');
     setIsChecking(true);
+    checkResultsCountOfCurrentCheck = 0;
     nlpruleWorker.postMessage({text: codeMirror.getValue()});
   }
 
-  function onCheckResult(corrections: Correction[]) {
-    setRemovedCorrectionIDs(new Set());
-    setCorrections(corrections);
-
-    for (const textMarker of codeMirror.getAllMarks()) {
-      textMarker.clear();
+  function onNewCorrections(newCorrections: Correction[]) {
+    if (checkResultsCountOfCurrentCheck === 0) {
+      setRemovedCorrectionIDs(new Set());
+      setCorrections([]);
+      for (const textMarker of codeMirror.getAllMarks()) {
+        textMarker.clear();
+      }
     }
 
-    for (const correction of corrections) {
+    checkResultsCountOfCurrentCheck += newCorrections.length;
+
+
+    setCorrections(corrections().concat(newCorrections));
+
+    for (const correction of newCorrections) {
       const textMarker = codeMirror.markText(
-        codeMirror.posFromIndex(correction.span.char.start),
-        codeMirror.posFromIndex(correction.span.char.end),
+        codeMirror.posFromIndex(correction.position.start),
+        codeMirror.posFromIndex(correction.position.end),
         {
           className: 'correction-marker',
           attributes: {id: correction.id}
@@ -61,9 +70,12 @@ function App() {
         case 'loaded':
           checkTextInput();
           return
+        case 'corrections':
+          onNewCorrections(corrections);
+          break
         case 'checkFinished':
           setIsChecking(false);
-          onCheckResult(corrections);
+          break
       }
     };
 

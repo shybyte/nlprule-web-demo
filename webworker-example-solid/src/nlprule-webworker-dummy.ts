@@ -50,12 +50,17 @@ self.onmessage = ({data: {text}}) => {
   const correctionsResult: Correction[] = corrections.map((it, i) => ({
     ...it,
     id: 'id_' + i,
+    position: it.span.char,
     issueText: text.slice(it.span.char.start, it.span.char.end)
   }));
 
   self.postMessage({
-    eventType: 'checkFinished',
+    eventType: 'corrections',
     corrections: correctionsResult,
+  })
+
+  self.postMessage({
+    eventType: 'checkFinished',
   });
 };
 

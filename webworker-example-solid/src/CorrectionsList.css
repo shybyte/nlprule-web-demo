@@ -13,7 +13,20 @@
   cursor: pointer;
   user-select: none;
   transition: all 0.5s;
+  animation-duration: 0.5s;
+  animation-name: zoomIn;
 }
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.0);
+  }
+
+  to {
+    transform: scale(1.0);
+  }
+}
+
 
 .correction-card:hover {
   box-shadow: 0px 1px 8px rgba(0, 0, 0, 0.2);
@@ -64,3 +77,4 @@
   box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.2);
   transform: scale(1.05);
 }
+
