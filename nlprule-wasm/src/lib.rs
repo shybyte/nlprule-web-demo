@@ -50,4 +50,11 @@ impl NlpRuleChecker {
             .collect::<Vec<String>>();
         JsValue::from_serde(&sentences).unwrap()
     }
+
+    pub fn tokenize(&self, text: &str) -> JsValue {
+        let sentences = self.tokenizer.pipe(text)
+            .map(|it| it.tokens().iter().map(|token| format!("{:?}", token)).collect())
+            .collect::<Vec<String>>();
+        JsValue::from_serde(&sentences).unwrap()
+    }
 }

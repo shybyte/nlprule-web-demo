@@ -4,13 +4,13 @@ console.time("Initialize nlprule");
 const nlpRuleChecker = wasm.NlpRuleChecker.new();
 console.timeEnd("Initialize nlprule");
 
-self.onmessage = ({ data: { text } }) => {
-  console.time('Check');
-  const corrections = nlpRuleChecker.check(text);
-  console.timeEnd('Check');
+self.onmessage = ({ data: { action, text } }) => {
+  console.time(action);
+  const results = nlpRuleChecker[action](text);
+  console.timeEnd(action);
   self.postMessage({
-    eventType: 'checkFinished',
-    corrections: corrections,
+    eventType: 'results',
+    results: results,
   });
 };
 

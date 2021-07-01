@@ -1,34 +1,37 @@
 const nlpruleWorker = new Worker(new URL('./nlprule-webworker.js', import.meta.url));
 
-const textInputForm = document.getElementById('textInputForm');
+const actionButtons = document.getElementById('actionButtons');
 const textInputField = document.getElementById('textInputField');
-const checkButton = document.getElementById('checkButton');
-const correctionsField = document.getElementById('correctionsField');
+const correctionsField = document.getElementById('outputField');
 const loadingSpinner = document.getElementById('loadingSpinner');
 
-function checkTextInput() {
+function executeActionOnTextInput(action) {
   console.log('Start Check');
-  checkButton.disabled = true;
+  actionButtons.disabled = true;
   loadingSpinner.style.display = 'block';
-  nlpruleWorker.postMessage({text: textInputField.value});
+  nlpruleWorker.postMessage({action, text: textInputField.value});
 }
 
-nlpruleWorker.onmessage = ({data: {eventType, corrections}}) => {
+nlpruleWorker.onmessage = ({data: {eventType, results}}) => {
   switch (eventType) {
     case 'loaded':
-      checkTextInput();
+      executeActionOnTextInput('check');
       return
-    case 'checkFinished':
+    case 'results':
       loadingSpinner.style.display = 'none';
-      checkButton.disabled = false;
-      correctionsField.value = corrections.length > 0
-        ? JSON.stringify(corrections, null, 2)
-        : 'I have found no issue.'
+      actionButtons.disabled = false;
+      correctionsField.value = JSON.stringify(results, null, 2)
   }
 };
 
-textInputForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  checkTextInput();
-})
+function addAction(action) {
+  document.getElementById(action + 'Button').addEventListener('click', async (event) => {
+    event.preventDefault();
+    executeActionOnTextInput(action);
+  });
+}
+
+['check', 'sentencize', 'tokenize'].forEach(addAction);
+
+
 
