@@ -29,13 +29,17 @@ function App() {
     nlpruleWorker.postMessage({text: codeMirror.getValue()});
   }
 
+  function removeExistingCorrections() {
+    setRemovedCorrectionIDs(new Set());
+    setCorrections([]);
+    for (const textMarker of codeMirror.getAllMarks()) {
+      textMarker.clear();
+    }
+  }
+
   function onNewCorrections(newCorrections: Correction[]) {
     if (checkResultsCountOfCurrentCheck === 0) {
-      setRemovedCorrectionIDs(new Set());
-      setCorrections([]);
-      for (const textMarker of codeMirror.getAllMarks()) {
-        textMarker.clear();
-      }
+      removeExistingCorrections();
     }
 
     checkResultsCountOfCurrentCheck += newCorrections.length;
@@ -68,6 +72,9 @@ function App() {
           onNewCorrections(corrections);
           break
         case 'checkFinished':
+          if (checkResultsCountOfCurrentCheck === 0) {
+            removeExistingCorrections();
+          }
           setIsChecking(false);
           break
       }
