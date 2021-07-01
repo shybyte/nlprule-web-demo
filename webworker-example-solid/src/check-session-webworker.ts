@@ -9,8 +9,8 @@ function createNlpRuleWorker() {
   return new Worker(new URL('./nlprule-webworker.ts', import.meta.url));
 }
 
-const nlpruleWorkers = Array.from(new Array(NUMBER_OF_WORKERS), createNlpRuleWorker);
-const promiseWorkers = nlpruleWorkers.map(worker => new PromiseWorker(worker));
+let currentLoadingNlpRuleWorker: Worker = createNlpRuleWorker();
+const promiseWorkers: PromiseWorker[] = [];
 
 let correctionIdCounter = 0;
 
@@ -25,7 +25,7 @@ async function checkSentenceWithCaching(sentence: string): Promise<CorrectionFro
   }
 
   const promiseWorker = promiseWorkers[currentWorkerIndex];
-  currentWorkerIndex = (currentWorkerIndex + 1) % NUMBER_OF_WORKERS;
+  currentWorkerIndex = (currentWorkerIndex + 1) % promiseWorkers.length;
   const result = await promiseWorker.postMessage({command: 'check', text: sentence});
   correctionBySentenceCache.set(sentence, result);
   return result;
@@ -73,19 +73,26 @@ self.onmessage = async ({data: {text}}) => {
 };
 
 
-let loadedWorkerCount = 0;
 
 function onNlpWorkerLoaded() {
-  loadedWorkerCount += 1;
-  if (loadedWorkerCount === NUMBER_OF_WORKERS) {
+  promiseWorkers.push(new PromiseWorker(currentLoadingNlpRuleWorker));
+
+  if (promiseWorkers.length === 1) {
     self.postMessage({eventType: 'loaded'});
+  }
+
+  if (promiseWorkers.length < NUMBER_OF_WORKERS) {
+    currentLoadingNlpRuleWorker = createNlpRuleWorker();
+    setWorkerOnLoadHandler(currentLoadingNlpRuleWorker);
   }
 }
 
-for (const nlpruleWorker of nlpruleWorkers) {
-  nlpruleWorker.onmessage = (message) => {
+function setWorkerOnLoadHandler(worker: Worker) {
+  worker.onmessage = (message) => {
     if (message.data.eventType === 'loaded') {
       onNlpWorkerLoaded();
     }
   }
 }
+
+setWorkerOnLoadHandler(currentLoadingNlpRuleWorker);
