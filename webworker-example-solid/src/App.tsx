@@ -7,15 +7,9 @@ import './App.css';
 import {CorrectionsList} from './CorrectionsList';
 import './index.css';
 import {Correction} from './nlprule-webworker';
+import {DEMO_TEXT} from './test-text';
 
-const DEMO_TEXT = [
-  'She was not been here since Monday.',
-  'Its a lonely week.',
-  'This week is longer then before.'
-].join('\n');
-
-
-const nlpruleWorker = new Worker(new URL('./nlprule-webworker.ts', import.meta.url));
+const nlpruleWorker = new Worker(new URL('./check-session-webworker.ts', import.meta.url));
 
 function App() {
   const [removedCorrectionIDs, setRemovedCorrectionIDs] = createSignal(new Set<string>());

@@ -9,6 +9,7 @@
     "module": "es2020",
     /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */
     "lib": [
+      "es2020",
       "DOM",
       "webworker"
     ],

@@ -30,6 +30,7 @@
     "@types/codemirror": "^5.60.1",
     "codemirror": "^5.62.0",
     "nlprule-wasm": "file:../nlprule-wasm/pkg",
+    "promise-worker": "^2.0.1",
     "solid-js": "^0.26.5"
   },
   "devDependencies": {

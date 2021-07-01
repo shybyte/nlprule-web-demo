@@ -1,4 +1,10 @@
+import registerPromiseWorker from 'promise-worker/register';
 import * as wasm from '../../nlprule-wasm/pkg';
+
+export interface Sentence {
+  text: string;
+  position: number;
+}
 
 export interface Correction extends CorrectionFromWasm {
   id: string;
@@ -27,61 +33,34 @@ console.time('Initialize nlprule');
 const nlpRuleChecker = wasm.NlpRuleChecker.new();
 console.timeEnd('Initialize nlprule');
 
-let correctionIdCounter = 0;
 
-const correctionBySentenceCache = new Map<string, CorrectionFromWasm[]>();
-
-function checkSentenceWithCaching(sentence: string): CorrectionFromWasm[]{
-  const cachedResult = correctionBySentenceCache.get(sentence);
-  if (cachedResult) {
-    return cachedResult;
-  }
-
-  const result = nlpRuleChecker.check(sentence);
-  correctionBySentenceCache.set(sentence, result);
-  return result;
+function sentencize(text: string): Sentence[] {
+  const sentenceTexts: string[] = nlpRuleChecker.sentencize(text);
+  let pos = 0;
+  return sentenceTexts.map(sentenceText => {
+    const sentenceWithPos: Sentence = {
+      text: sentenceText,
+      position: pos
+    };
+    pos += sentenceText.length;
+    return sentenceWithPos;
+  });
 }
 
 
-self.onmessage = ({data: {text}}) => {
-  console.time('Check');
+function check(text: string): CorrectionFromWasm[] {
+  return nlpRuleChecker.check(text);
+}
 
-  const sentences: string[] = nlpRuleChecker.sentencize(text);
+const publicApi = {sentencize, check};
 
-  let sentenceStartPosition = 0;
+interface PromiseWorkerMessage {
+  command: keyof typeof publicApi;
+  text: string;
+}
 
-  for (const sentence of sentences) {
-    const correctionsWasm: CorrectionFromWasm[] = checkSentenceWithCaching(sentence);
-
-    const corrections: Correction[] = correctionsWasm.map((it) => {
-      const position: Range = {
-        start: sentenceStartPosition + it.span.char.start,
-        end: sentenceStartPosition + it.span.char.end
-      };
-
-      return ({
-        ...it,
-        id: 'id_' + (correctionIdCounter++),
-        position: position,
-        issueText: text.slice(position.start, position.end)
-      });
-    });
-
-    if (corrections.length > 0) {
-      self.postMessage({
-        eventType: 'corrections',
-        corrections: corrections,
-      });
-    }
-
-    sentenceStartPosition += sentence.length;
-  }
-
-  console.timeEnd('Check');
-
-  self.postMessage({
-    eventType: 'checkFinished'
-  });
-};
+registerPromiseWorker((message: PromiseWorkerMessage) => {
+  return publicApi[message.command](message.text);
+});
 
 self.postMessage({eventType: 'loaded'});
